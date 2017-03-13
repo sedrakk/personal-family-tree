@@ -12,7 +12,7 @@ app.InteractionController = class {
         this._element.addEventListener('mousedown', this._onMouseDown.bind(this));
         this._element.addEventListener('mouseup', this._onMouseUp.bind(this));
         this._element.addEventListener('mousemove', this._onMouseMove.bind(this));
-        this._element.addEventListener('mouseout', this._onMouseUp.bind(this));
+        this._element.addEventListener('mouseleave', this._onMouseUp.bind(this));
         this._element.addEventListener('touchstart', this._onMouseDown.bind(this));
         this._element.addEventListener('touchend', this._onMouseUp.bind(this));
         this._element.addEventListener('touchmove', this._onMouseMove.bind(this));
@@ -68,18 +68,20 @@ app.InteractionController = class {
         var eventX = 0;
         var eventY = 0;
         // Support touch events
-        if (event.touches) {
-            for (var i = 0; i <  event.touches.length; ++i) {
-                var touch = event.touches[i];
+        if (event.changedTouches && event.changedTouches.length) {
+            var N = event.changedTouches.length;
+            for (var i = 0; i < N; ++i) {
+                var touch = event.changedTouches[i];
                 eventX += touch.clientX;
                 eventY += touch.clientY;
             }
-            eventX /= event.touches.length;
-            eventY /= event.touches.length;
+            eventX /= N;
+            eventY /= N;
         } else {
             eventX = event.clientX;
             eventY = event.clientY;
         }
+        console.assert(typeof eventX === 'number', 'Bitch please!!!');
         var point = new g.Vec(eventX, eventY);
         return point.subtract(center);
     }
@@ -89,29 +91,37 @@ app.InteractionController = class {
         var oldOffset = this._renderer.offset();
         var oldScale = this._renderer.scale();
 
-        var newOffset = fixedPoint.subtract(fixedPoint.subtract(oldOffset).scale(newZoom/oldScale))
+        var layoutFixedPoint = this._renderer.toLayoutCoordinates(fixedPoint);
         this._renderer.setScale(newZoom);
-        this._renderer.setOffset(newOffset);
+        var newRenderFixedPoint = this._renderer.toRenderCoordinates(layoutFixedPoint);
+        var diff = newRenderFixedPoint.subtract(fixedPoint);
+        this._renderer.setOffset(oldOffset.subtract(diff));
 
         this._constrainOffset();
     }
 
     _onGestureStart(event) {
+        this._isHandlingGesture = true;
         this._gestureStartScale = this._renderer.scale();
-        this._gestureStartPosition = this._toCoordinates(event);
+        event.preventDefault(true);
+        event.stopPropagation();
     }
 
     _onGestureEnd(event) {
+        this._isHandlingGesture = false;
+        this._gestureStartScale = null;
+        event.preventDefault(true);
+        event.stopPropagation();
     }
 
     _onGestureChange(event) {
-        var fixedPoint = this._toCoordinates(event);
         var zoomStep = 0.06;
         var newZoom = this._gestureStartScale * event.scale;
         newZoom = Math.max(newZoom, this._minScale);
         newZoom = Math.min(newZoom, this._maxScale);
+        var fixedPoint = this._toCoordinates(event);
         this._handleZoom(newZoom, fixedPoint);
-        event.preventDefault();
+        event.preventDefault(true);
         event.stopPropagation();
     }
 
@@ -136,6 +146,9 @@ app.InteractionController = class {
 
     _onMouseMove(event) {
         if (!this._mouseDownCoordinate)
+            return;
+        // Do not handle gesture events.
+        if (this._isHandlingGesture)
             return;
         var moveOffset = this._toCoordinates(event).subtract(this._mouseDownCoordinate);
         var newOffset = this._mouseDownOffset.add(moveOffset);

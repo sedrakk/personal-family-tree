@@ -74,12 +74,35 @@ app.SVGRenderer = class extends app.Renderer {
         this._isDirtyTransform = true;
     }
 
+    setDebugCircle(enabled, x, y, r) {
+        if (!enabled) {
+            this._debugCircle = null;
+            return;
+        }
+        this._debugCircle = {
+            x: x,
+            y: y,
+            r: r
+        };
+        this._isDirtyLayout = true;
+    }
+
     /**
      * @override
      * @return {!g.Vec}
      */
     offset() {
         return this._offset;
+    }
+
+    toLayoutCoordinates(rendererPoint) {
+        return rendererPoint.subtract(this._offset).scale(1/this._scale);
+    }
+
+    toRenderCoordinates(layoutPoint) {
+        // Convert from layout coordinates to the coordinates relative to the
+        // center of SVG element.
+        return layoutPoint.scale(this._scale).add(this._offset);
     }
 
     setDatesFormatter(formatter) {
@@ -124,7 +147,7 @@ app.SVGRenderer = class extends app.Renderer {
         if (this._container)
             this._container.remove();
         this._container = this._createSVG('g');
-        this._container.setAttribute('style', 'will-change:transform;pointer-events: none');
+        this._container.setAttribute('style', 'will-change:transform;');
         this._element.appendChild(this._container);
         this._setTransformAttribute();
         if (!this._layout)
@@ -151,6 +174,14 @@ app.SVGRenderer = class extends app.Renderer {
             var rotation = this._layout.rotations.get(person);
             var isRoot = person === this._layout.root;
             this._container.appendChild(this._renderPerson(person, position, rotation, radius, isRoot));
+        }
+
+        if (this._debugCircle) {
+            var circle = this._createSVG('circle');
+            circle.setAttribute('r', this._debugCircle.r);
+            circle.setAttribute('cx', this._debugCircle.x);
+            circle.setAttribute('cy', this._debugCircle.y);
+            this._container.appendChild(circle);
         }
     }
 
@@ -219,18 +250,28 @@ app.SVGRenderer = class extends app.Renderer {
         circle.setAttribute('r', personRadius);
         group.appendChild(circle);
 
+        var datesText = this._datesFormatter(person);
+
         var fullName = this._createSVG('text');
         fullName.classList.add('name');
         fullName.textContent = person.fullName();
-        fullName.setAttribute('y', '-0.35em');
+        if (!datesText && !person.children.size) {
+            fullName.setAttribute('y', '0em');
+            fullName.setAttribute('dominant-baseline', 'central');
+        } else {
+            fullName.setAttribute('y', '-0.35em');
+        }
         group.appendChild(fullName);
 
         var dates = this._createSVG('text');
-        dates.setAttribute('dominant-baseline', 'text-before-edge');
-        dates.classList.add('dates');
-        dates.textContent = this._datesFormatter(person);
-        dates.setAttribute('y', 0);
-        group.appendChild(dates);
+
+        if (datesText) {
+            dates.setAttribute('dominant-baseline', 'text-before-edge');
+            dates.classList.add('dates');
+            dates.textContent = datesText;
+            dates.setAttribute('y', 0);
+            group.appendChild(dates);
+        }
 
         var textPadding = 6;
         if (isRoot) {
