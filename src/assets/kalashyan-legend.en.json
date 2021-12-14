@@ -1,7 +1,7 @@
 {
     "map_legend": {
-        "father": "Father",
-        "mother": "Mother",
+        "father": "Male Adult",
+        "mother": "Female Adult",
         "infant_male": "Boy",
         "infant_female": "Girl",
         "deceased": "Deceased"
