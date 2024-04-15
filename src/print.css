@@ -69,15 +69,15 @@ footer {
     left: 0;
     bottom: 0;
     margin: 3em;
-    margin-bottom: -100px;
+    bottom: -800px;
 }
 
 .stories {
     display: flex;
     pointer-events: auto;
-    font-size: 20px;
+    font-size: 40px;
     flex-direction: column;
-    width: 550px;
+    width: 850px;
 }
 
 .stories .story {
@@ -90,11 +90,10 @@ footer {
     flex-shrink: 0;
     margin: 3em;
     pointer-events: auto;
-    font-size: 25px;
+    font-size: 40px;
     position: absolute;
     right: 0;
-    bottom: 0;
-    margin-bottom: -100px;
+    bottom: -800px;
 }
 
 .map-legend .legend-line {
@@ -110,10 +109,11 @@ footer {
 /* Bigger fonts for print version */
 .person .name {
     font-size: 33px;
-    transform: translate(0, 3px);
+    transform: translate(0, 10px);
 }
 
 .person .dates {
     font-size: 20px;
-    transform: translate(0, 2px);
+    transform: translate(0, 7px);
+    opacity: 0.7;
 }
