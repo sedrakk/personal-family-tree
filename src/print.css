@@ -26,12 +26,14 @@ header {
     padding-top: 1em;
     text-align: center;
     font-family: Iowan Old Style;
+    margin: 200px 0 300px 0;
 }
 
 header .title {
     font-weight: 600;
-    font-size: 5.5em;
+    font-size: 350px;
     color: #183EA0;
+    font-family: 'Proxima Soft';
 }
 
 header .subtitle {
