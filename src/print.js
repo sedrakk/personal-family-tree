@@ -11,8 +11,8 @@ function startApplication() {
     new app.RenderLoop(renderer, layout);
 
     // setting defaults
-        layout.setPersonRadius(19);
-        layout.setSize(5000);
+        layout.setPersonRadius(30);
+        layout.setSize(7000);
         layout.setOverlap(g.degToRad(95));
         layout.setInitialRotation(g.degToRad(0));
         layout.setLevelSizeOffset(1, 90);
