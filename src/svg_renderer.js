@@ -259,7 +259,7 @@ app.SVGRenderer = class extends app.Renderer {
             fullName.setAttribute('y', '0em');
             fullName.setAttribute('dominant-baseline', 'central');
         } else {
-            fullName.setAttribute('y', '-0.35em');
+            fullName.setAttribute('y', '-0.2em');
         }
         group.appendChild(fullName);
 
@@ -269,7 +269,7 @@ app.SVGRenderer = class extends app.Renderer {
             dates.setAttribute('dominant-baseline', 'text-before-edge');
             dates.classList.add('dates');
             dates.textContent = datesText;
-            dates.setAttribute('y', 0);
+            dates.setAttribute('y', '0.1em');
             group.appendChild(dates);
         }
 
