@@ -273,7 +273,7 @@ app.SVGRenderer = class extends app.Renderer {
             group.appendChild(dates);
         }
 
-        var textPadding = 6;
+        var textPadding = 10;
         if (isRoot) {
             fullName.setAttribute('text-anchor', 'middle');
             fullName.setAttribute('x', 0);
