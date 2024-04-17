@@ -113,7 +113,7 @@ function startApplication() {
 
     function onResize() {
         var boundingBox = layout.layout().boundingBox();
-        var padding = 300;
+        var padding = 500;
         renderer.setSize(boundingBox.width + padding, boundingBox.height + padding);
         var center = new g.Vec(2 * boundingBox.x + boundingBox.width, 2 * boundingBox.y + boundingBox.height).scale(-0.5);
         renderer.setOffset(center);
