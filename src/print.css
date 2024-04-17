@@ -109,11 +109,9 @@ footer {
 /* Bigger fonts for print version */
 .person .name {
     font-size: 33px;
-    transform: translate(5px, 10px);
 }
 
 .person .dates {
     font-size: 20px;
-    transform: translate(5px, 7px);
     opacity: 0.7;
 }
