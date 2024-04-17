@@ -68,7 +68,7 @@ footer {
     position: absolute;
     left: 0;
     bottom: 0;
-    margin: 3em;
+    margin: 3em 3em 16em 15em;
     bottom: -800px;
 }
 
@@ -88,7 +88,7 @@ footer {
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
-    margin: 3em;
+    margin: 3em 6.2em 7em 3em;
     pointer-events: auto;
     font-size: 40px;
     position: absolute;
